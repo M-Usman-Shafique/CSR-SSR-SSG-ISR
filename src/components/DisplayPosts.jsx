@@ -1,5 +1,5 @@
+// src/components/DisplayPosts.jsx
 export default function DisplayPosts({ posts }) {
-
   return (
     <>
       {posts.length > 0 ? (

@@ -1,8 +1,9 @@
+// src/components/CreatePost.jsx
 "use client";
 import { useState } from "react";
 import axios from "axios";
 
-export default function CreatePost({ onPostCreated }) {
+export default function CreatePost({ appendNewPost }) {
   const [caption, setCaption] = useState("");
   const [message, setMessage] = useState("");
 
@@ -14,8 +15,8 @@ export default function CreatePost({ onPostCreated }) {
       setMessage(response.data.message);
       setCaption("");
 
-      if (response.data.success && onPostCreated) {
-        onPostCreated(response.data.post);
+      if (response.data.success && appendNewPost) {
+        appendNewPost(response.data.post);
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "Error creating post");
@@ -23,7 +24,7 @@ export default function CreatePost({ onPostCreated }) {
   };
 
   return (
-    <div className="w-1/3 bg-gray-800 p-6 rounded-lg shadow-md text-white">
+    <div className="w-1/3 bg-gray-700 p-6 rounded-lg shadow-md text-white">
       <h2 className="text-xl font-bold mb-4 text-center">Create New Post</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -32,7 +33,7 @@ export default function CreatePost({ onPostCreated }) {
             id="caption"
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            className="w-full p-2 rounded bg-gray-700 text-gray-100"
+            className="w-full p-2 rounded bg-gray-600 text-gray-100"
             placeholder="What's on your mind?"
             required
           />
@@ -41,7 +42,7 @@ export default function CreatePost({ onPostCreated }) {
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium"
         >
-          Submit
+          Create Post
         </button>
       </form>
       {message && (

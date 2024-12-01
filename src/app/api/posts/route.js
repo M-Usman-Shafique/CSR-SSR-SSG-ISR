@@ -57,7 +57,7 @@ export async function POST(req) {
     return NextResponse.json(
       {
         success: true,
-        message: "Post created successfully...",
+        message: "Post created successfully",
         post: newPost,
       },
       { status: 201 }

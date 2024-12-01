@@ -14,7 +14,7 @@ const getPosts = async () => {
   }
 };
 
-export default async function Home({ posts }) {
+export default async function Home() {
   const posts = await getPosts();
 
   return (

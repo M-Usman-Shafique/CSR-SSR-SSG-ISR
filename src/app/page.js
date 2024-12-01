@@ -1,33 +1,28 @@
 // src/app/page.js
-"use client";
-import { useEffect, useState } from "react";
 import CreatePost from "@/components/CreatePost";
 import DisplayPosts from "@/components/DisplayPosts";
 import axios from "axios";
+import { Suspense } from "react";
 
-export default function Home() {
-  const [posts, setPosts] = useState([]);
+const getPosts = async () => {
+  try {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
+    return res.data.posts || [];
+  } catch (error) {
+    console.warn("Error fetching posts:", error.message);
+    return [];
+  }
+};
 
-  const getPosts = async () => {
-    try {
-      const response = await axios.get("/api/posts");
-      setPosts(response.data.posts || []);
-    } catch (error) {
-      console.warn(error.response?.data?.message || "Error fetching posts");
-    }
-  };
+export default async function Home({ posts }) {
+  const posts = await getPosts();
 
-  useEffect(() => {
-    getPosts();
-  }, []);
-
-  const handleNewPost = (newPost) => {
-    setPosts((prevPosts) => [newPost, ...prevPosts]);
-  };
   return (
     <div className="flex flex-col justify-center items-center my-5">
-      <CreatePost appendNewPost={handleNewPost} />
-      <DisplayPosts posts={posts} />
+      <CreatePost />
+      <Suspense fallback={<div>Loading...</div>}>
+        <DisplayPosts posts={posts} />
+      </Suspense>
     </div>
   );
 }

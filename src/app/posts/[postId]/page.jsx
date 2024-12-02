@@ -4,7 +4,7 @@ import axios from "axios";
 const getPost = async (id) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`, {next: {revalidate: 60}}
     );
     return response.data.post || null;
   } catch (error) {

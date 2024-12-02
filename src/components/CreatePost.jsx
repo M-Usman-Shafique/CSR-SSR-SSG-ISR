@@ -3,7 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function CreatePost() {
+export default function CreatePost({ appendNewPost }) {
   const [caption, setCaption] = useState("");
   const [message, setMessage] = useState("");
 
@@ -11,9 +11,13 @@ export default function CreatePost() {
     e.preventDefault();
     try {
       const response = await axios.post("/api/posts", { caption });
-      console.log(response);
+    //   console.log(response);
       setMessage(response.data.message);
       setCaption("");
+
+      if (response.data.success && appendNewPost) {
+        appendNewPost(response.data.post);
+      }
     } catch (error) {
       setMessage(error.response?.data?.message || "Error creating post");
     }

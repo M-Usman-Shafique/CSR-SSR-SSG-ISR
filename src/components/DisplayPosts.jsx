@@ -1,11 +1,14 @@
 // src/components/DisplayPosts.jsx
+import Link from "next/link";
+
 export default function DisplayPosts({ posts }) {
   return (
     <>
       {posts.length > 0 ? (
         <div className="w-full px-16 py-4 rounded-lg shadow-md mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
           {posts.map((post) => (
-            <div
+            <Link
+              href={`/posts/${post._id}`}
               key={post._id}
               className="p-4 bg-gray-700 rounded border border-gray-600"
             >
@@ -13,7 +16,7 @@ export default function DisplayPosts({ posts }) {
               <span className="text-sm text-gray-400">
                 {new Date(post.createdAt).toLocaleString()}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (

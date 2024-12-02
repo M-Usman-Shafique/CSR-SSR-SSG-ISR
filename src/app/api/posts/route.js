@@ -4,9 +4,8 @@ import dbConnect from "@/configs/mongodb";
 import { Post } from "@/models/Post";
 
 export async function GET() {
-  await dbConnect();
-
   try {
+    await dbConnect();
     const posts = await Post.find().sort({ createdAt: -1 }).lean();
 
     return NextResponse.json(
@@ -31,8 +30,6 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  await dbConnect();
-
   const body = await req.json();
   const caption = body.caption;
 
@@ -51,6 +48,8 @@ export async function POST(req) {
     const newPost = new Post({
       caption: caption.trim(),
     });
+
+    await dbConnect();
 
     await newPost.save();
 

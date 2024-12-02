@@ -3,15 +3,24 @@ import axios from "axios";
 
 const getPost = async (id) => {
   try {
-    const res = await axios.get(
+    const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
     );
-    return res.data.post || null;
+    return response.data.post || null;
   } catch (error) {
     console.warn("Error fetching post:", error.message);
     return [];
   }
 };
+
+export async function generateStaticParams() {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
+  const posts = res.data.posts || [];
+
+  return posts.map((post) => ({
+    postId: post._id,
+  }));
+}
 
 export default async function post({ params }) {
   const { postId } = await params;

@@ -6,8 +6,8 @@ import { Suspense } from "react";
 
 const getPosts = async () => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
-    return res.data.posts || [];
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
+    return response.data.posts || [];
   } catch (error) {
     console.warn("Error fetching posts:", error.message);
     return [];

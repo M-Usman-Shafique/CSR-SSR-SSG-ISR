@@ -1,25 +1,21 @@
 // src/app/posts/[postId]/page.jsx
-"use client";
 import axios from "axios";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
-export default function post() {
-  const [post, setPost] = useState(null);
-  const { postId } = useParams();
+const getPost = async (id) => {
+  try {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
+    );
+    return res.data.post || null;
+  } catch (error) {
+    console.warn("Error fetching post:", error.message);
+    return [];
+  }
+};
 
-  const getPost = async (id) => {
-    try {
-      const response = await axios.get(`/api/posts/${id}`);
-      setPost(response.data.post || null);
-    } catch (error) {
-      console.warn(error.response?.data?.message || "Error fetching post");
-    }
-  };
-
-  useEffect(() => {
-    getPost(postId);
-  }, [postId]);
+export default async function post({ params }) {
+  const { postId } = await params;
+  const post = await getPost(postId);
 
   return (
     <div className="flex justify-center items-center min-h-screen">

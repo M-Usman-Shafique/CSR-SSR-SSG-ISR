@@ -1,7 +1,7 @@
 // src/app/posts/[postId]/page.jsx
-import axios from "axios";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import DisplayPost from "@/components/DisplayPost";
+import axios from "axios";
 
 const getPost = async (id) => {
   const response = await axios.get(

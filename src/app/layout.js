@@ -1,4 +1,6 @@
+// src/app/layout.js
 import "./globals.css";
+import QueryLayout from "./QueryLayout";
 
 export const metadata = {
   title: "Server Side Rendering",
@@ -8,7 +10,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <QueryLayout>{children}</QueryLayout>
+      </body>
     </html>
   );
 }

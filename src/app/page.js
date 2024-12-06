@@ -2,27 +2,29 @@
 import CreatePost from "@/components/CreatePost";
 import DisplayPosts from "@/components/DisplayPosts";
 import axios from "axios";
-import { Suspense } from "react";
+import { dehydrate, QueryClient } from "@tanstack/react-query";
 
 const getPosts = async () => {
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {next: {revalidate: 60}});
-    return response.data.posts || [];
-  } catch (error) {
-    console.warn("Error fetching posts:", error.message);
-    return [];
-  }
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/posts`
+  );
+  return response.data.posts || [];
 };
 
 export default async function Home() {
-  const posts = await getPosts();
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["posts"],
+    queryFn: getPosts,
+  });
+
+  const dehydratedState = dehydrate(queryClient);
 
   return (
     <div className="flex flex-col justify-center items-center my-5">
       <CreatePost />
-      <Suspense fallback={<div>Loading...</div>}>
-        <DisplayPosts posts={posts} />
-      </Suspense>
+      <DisplayPosts dehydratedState={dehydratedState} />
     </div>
   );
 }

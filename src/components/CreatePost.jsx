@@ -2,21 +2,38 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+const createPost = async (newPost) => {
+  const response = await axios.post("/api/posts", newPost);
+  return response.data;
+};
 
 export default function CreatePost() {
   const [caption, setCaption] = useState("");
   const [message, setMessage] = useState("");
+  const queryClient = useQueryClient();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("/api/posts", { caption });
-      console.log(response);
-      setMessage(response.data.message);
+  const { mutate } = useMutation({
+    mutationFn: createPost,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["posts"]);
+      setMessage("Post created successfully!");
       setCaption("");
-    } catch (error) {
+    },
+    onError: (error) => {
       setMessage(error.response?.data?.message || "Error creating post");
-    }
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutate({ caption });
+  };
+
+  const handleCaptionChange = (e) => {
+    setCaption(e.target.value);
+    if (message) setMessage("");
   };
 
   return (
@@ -28,7 +45,7 @@ export default function CreatePost() {
             type="text"
             id="caption"
             value={caption}
-            onChange={(e) => setCaption(e.target.value)}
+            onChange={handleCaptionChange}
             className="w-full p-2 rounded bg-gray-600 text-gray-100"
             placeholder="What's on your mind?"
             required

@@ -1,7 +1,29 @@
 // src/components/DisplayPosts.jsx
+"use client";
 import Link from "next/link";
+import { HydrationBoundary, useQuery } from "@tanstack/react-query";
 
-export default function DisplayPosts({ posts }) {
+export default function DisplayPosts({ dehydratedState }) {
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <PostCards />
+    </HydrationBoundary>
+  );
+}
+
+function PostCards() {
+  const {
+    data: posts = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["posts"],
+    enabled: false,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading posts</div>;
+
   return (
     <>
       {posts.length > 0 ? (
